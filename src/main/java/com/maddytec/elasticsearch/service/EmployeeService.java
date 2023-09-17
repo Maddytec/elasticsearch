@@ -1,19 +1,19 @@
 package com.maddytec.elasticsearch.service;
 
 import com.maddytec.elasticsearch.model.Employee;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Optional;
 
 @Service
 public interface EmployeeService {
 
     public Employee create(Employee employee);
 
-    public List<Employee> findAll();
+    public Page<Employee> findAll(Pageable pageable);
 
     Employee findById(String id);
+
     Employee findByName(String name);
 
     void update(String id, Employee employee);

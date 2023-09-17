@@ -3,12 +3,11 @@ package com.maddytec.elasticsearch.service;
 import com.maddytec.elasticsearch.model.Employee;
 import com.maddytec.elasticsearch.repository.EmployeeRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 @RequiredArgsConstructor
 @Service
@@ -21,10 +20,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public List<Employee> findAll() {
-        Iterable<Employee> employeeIterable = employeeRepository.findAll();
-        return StreamSupport.stream(employeeIterable.spliterator(), false)
-                .collect(Collectors.toList());
+    public Page<Employee> findAll(Pageable pageable) {
+        return employeeRepository.findAll(pageable);
     }
 
     @Override

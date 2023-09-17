@@ -3,10 +3,10 @@ package com.maddytec.elasticsearch.controller;
 import com.maddytec.elasticsearch.model.Employee;
 import com.maddytec.elasticsearch.service.EmployeeService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -23,8 +23,8 @@ public class EmployeeController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<Employee> getAll() {
-        return employeeService.findAll();
+    public Page<Employee> getAll(Pageable pageable) {
+        return employeeService.findAll(pageable);
     }
 
     @GetMapping("/{id}")
@@ -42,7 +42,7 @@ public class EmployeeController {
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateById(@PathVariable("id") String id,
-                               @RequestBody Employee employee) {
+                           @RequestBody Employee employee) {
         employeeService.update(id, employee);
     }
 
