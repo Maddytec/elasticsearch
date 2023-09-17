@@ -54,9 +54,24 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    public Page<Employee> findByDepartment(String department, Pageable pageable) {
+        return employeeRepository.findByDepartment(department, pageable);
+    }
+
+    @Override
+    public Page<Employee> findByDepartmentAndSalary(String department, Double minSalary, Pageable pageable) {
+        return employeeRepository.findByDepartmentAndSalary(department, minSalary, pageable);
+    }
+
+    @Override
     public Employee findByName(String name) {
         return employeeRepository.findByName(name)
                 .orElseThrow(() -> new RuntimeException());
+    }
+
+    @Override
+    public Page<Employee> findBySalaryBetween(double min, double max, Pageable pageable) {
+        return employeeRepository.findBySalaryBetween(min, max, pageable);
     }
 
 }

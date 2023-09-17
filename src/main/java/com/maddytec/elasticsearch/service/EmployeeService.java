@@ -12,6 +12,7 @@ public interface EmployeeService {
 
     public Page<Employee> findAll(Pageable pageable);
 
+    Page<Employee> findBySalaryBetween(double min, double max, Pageable pageable);
     Employee findById(String id);
 
     Employee findByName(String name);
@@ -20,4 +21,7 @@ public interface EmployeeService {
 
     void delete(String id);
 
+    Page<Employee> findByDepartment(String department, Pageable pageable);
+
+    Page<Employee> findByDepartmentAndSalary(String department, Double minSalary, Pageable pageable);
 }

@@ -27,6 +27,12 @@ public class EmployeeController {
         return employeeService.findAll(pageable);
     }
 
+    @GetMapping("/salary")
+    public Page<Employee> findBySalaryBetween(
+            @RequestParam double min, @RequestParam double max, Pageable pageable) {
+        return employeeService.findBySalaryBetween(min, max, pageable);
+    }
+
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public Employee getById(@PathVariable("id") String id) {
@@ -37,6 +43,21 @@ public class EmployeeController {
     @ResponseStatus(HttpStatus.OK)
     public Employee getByName(@RequestParam String name) {
         return employeeService.findByName(name);
+    }
+
+    @GetMapping("/department/{department}")
+    @ResponseStatus(HttpStatus.OK)
+    public Page<Employee> findByDepartment(@PathVariable("department") String department,
+                                           Pageable pageable) {
+        return employeeService.findByDepartment(department, pageable);
+    }
+
+    @GetMapping("/department/{department}/salary/{salary}")
+    @ResponseStatus(HttpStatus.OK)
+    public Page<Employee> findByDepartmentAndSalary(@PathVariable("department") String department,
+                                           @PathVariable("salary") Double minSalary,
+                                           Pageable pageable) {
+        return employeeService.findByDepartmentAndSalary(department, minSalary, pageable);
     }
 
     @PutMapping("/{id}")
@@ -51,4 +72,5 @@ public class EmployeeController {
     public void updateById(@PathVariable("id") String id) {
         employeeService.delete(id);
     }
+
 }
