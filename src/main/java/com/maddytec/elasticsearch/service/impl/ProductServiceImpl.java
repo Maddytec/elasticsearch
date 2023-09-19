@@ -3,6 +3,7 @@ package com.maddytec.elasticsearch.service.impl;
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch.core.*;
 import co.elastic.clients.elasticsearch.core.search.Hit;
+import co.elastic.clients.json.JsonData;
 import com.maddytec.elasticsearch.model.Product;
 import com.maddytec.elasticsearch.service.ProductService;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,6 +41,7 @@ public class ProductServiceImpl implements ProductService {
         SearchRequest searchRequest = new SearchRequest.Builder()
                 .index("products")
                 .build();
+
         SearchResponse<Product> productSearchResponse = elasticsearchClient.search(searchRequest, Product.class);
         List<Hit<Product>> hitList = productSearchResponse.hits().hits();
 
@@ -48,7 +51,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product getByProduct(String id) throws IOException {
+    public Product getProductById(String id) throws IOException {
         GetRequest getRequest = new GetRequest.Builder()
                 .index("products")
                 .id(id)
@@ -62,6 +65,45 @@ public class ProductServiceImpl implements ProductService {
         }
 
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found.");
+    }
+
+    @Override
+    public List<Product> getProductByCategory(String category) throws IOException {
+        SearchRequest searchRequest = new SearchRequest.Builder()
+                .index("products")
+                .query(query -> query
+                        .match(t -> t
+                                .field("category")
+                                .query(category)))
+                .build();
+
+        SearchResponse<Product> productSearchResponse = elasticsearchClient
+                .search(searchRequest, Product.class);
+
+        return productSearchResponse.hits().hits()
+                .stream()
+                .map(Hit::source)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Product> getProductByRangerPrice(BigDecimal minPrice, BigDecimal maxPrice) throws IOException {
+        SearchRequest searchRequest = new SearchRequest.Builder()
+                .index("products")
+                .query(q -> q
+                        .range(r -> r
+                                .field("price")
+                                .gte(JsonData.of(minPrice))
+                                .lte(JsonData.of(maxPrice))))
+                .build();
+
+        SearchResponse<Product> productSearchResponse = elasticsearchClient
+                .search(searchRequest, Product.class);
+
+        return productSearchResponse.hits().hits()
+                .stream()
+                .map(Hit::source)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -84,4 +126,5 @@ public class ProductServiceImpl implements ProductService {
 
         elasticsearchClient.delete(deleteRequest);
     }
+
 }

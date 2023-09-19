@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -31,7 +32,7 @@ public class ProductController {
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public Product getProductById(@PathVariable("id") String id) throws IOException {
-        return productService.getByProduct(id);
+        return productService.getProductById(id);
     }
 
     @PutMapping("/{id}")
@@ -44,6 +45,18 @@ public class ProductController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteProduct(@PathVariable("id") String id) throws IOException {
         productService.deleteProduct(id);
+    }
+
+    @GetMapping("/search/category/{category}")
+    public List<Product> getProductByCategory(@PathVariable("category") String category) throws IOException {
+        return productService.getProductByCategory(category);
+    }
+
+    @GetMapping("/search/price")
+    public List<Product> getProductByRangerPrice(
+            @RequestParam BigDecimal minPrice,
+            @RequestParam BigDecimal maxPrice) throws IOException {
+        return productService.getProductByRangerPrice(minPrice, maxPrice);
     }
 
 }
