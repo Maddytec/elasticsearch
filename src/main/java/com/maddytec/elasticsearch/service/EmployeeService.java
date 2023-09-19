@@ -3,9 +3,7 @@ package com.maddytec.elasticsearch.service;
 import com.maddytec.elasticsearch.model.Employee;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
 
-@Service
 public interface EmployeeService {
 
     public Employee create(Employee employee);
@@ -13,6 +11,7 @@ public interface EmployeeService {
     public Page<Employee> findAll(Pageable pageable);
 
     Page<Employee> findBySalaryBetween(double min, double max, Pageable pageable);
+
     Employee findById(String id);
 
     Employee findByName(String name);

@@ -1,11 +1,14 @@
-package com.maddytec.elasticsearch.service;
+package com.maddytec.elasticsearch.service.impl;
 
 import com.maddytec.elasticsearch.model.Employee;
 import com.maddytec.elasticsearch.repository.EmployeeRepository;
+import com.maddytec.elasticsearch.service.EmployeeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
 
@@ -27,7 +30,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public Employee findById(String id) {
         return employeeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException());
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "The employee was not found."));
     }
 
     @Override
@@ -39,7 +43,8 @@ public class EmployeeServiceImpl implements EmployeeService {
             employeeOptinal.get().setSalary(employee.getSalary());
             employeeRepository.save(employeeOptinal.get());
         } else {
-            throw new RuntimeException("Employee not exists");
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "The employee not found.");
         }
     }
 
@@ -49,7 +54,8 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (employeeOptinal.isPresent()) {
             employeeRepository.delete(employeeOptinal.get());
         } else {
-            throw new RuntimeException("Employee not exists");
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "The employee not found.");
         }
     }
 
@@ -66,7 +72,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public Employee findByName(String name) {
         return employeeRepository.findByName(name)
-                .orElseThrow(() -> new RuntimeException());
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "The employee not found."));
     }
 
     @Override
